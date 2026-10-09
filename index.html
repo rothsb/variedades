@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tienda · Cuadrícula PLUS</title>
+
+  <style>
+    /* ============================================
+       VARIABLES DE DISEÑO
+       ============================================ */
+    :root {
+      --color-fondo: #f5f4ef;
+      --color-tarjeta: #ffffff;
+      --color-texto: #1a1d18;
+      --color-suave: #6b6f63;
+      --color-linea: #e5e4dc;
+      --color-acento: #5c6b4a;
+      --color-wa: #25d366;
+      --color-wa-hover: #128c4a;
+
+      --fuente: 'Inter', system-ui, sans-serif;
+      --radio: 14px;
+      --padding-lateral: clamp(1rem, 4vw, 2.5rem);
+      --ancho-maximo: 1300px;
+    }
+
+    /* ============================================
+       BASE
+       ============================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--fuente);
+      background: var(--color-fondo);
+      color: var(--color-texto);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    img { display: block; max-width: 100%; height: auto; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+
+    /* ============================================
+       LAYOUT
+       ============================================ */
+    .contenedor {
+      max-width: var(--ancho-maximo);
+      margin: 0 auto;
+      padding: clamp(1.5rem, 4vw, 2.5rem) var(--padding-lateral) 4rem;
+    }
+
+    .encabezado { margin-bottom: 1.75rem; }
+    .encabezado__titulo {
+      font-size: clamp(1.6rem, 1.2rem + 1.6vw, 2.4rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+    }
+    .encabezado__titulo span { color: var(--color-acento); font-weight: 300; }
+    .encabezado__descripcion { color: var(--color-suave); font-size: 0.9rem; margin-top: 0.35rem; }
+
+    /* ============================================
+       FILTROS
+       ============================================ */
+    .filtros {
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--color-linea);
+    }
+    .filtros button {
+      padding: 0.5rem 0.95rem;
+      border: 1px solid var(--color-linea);
+      background: white;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--color-suave);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .filtros button:hover { color: var(--color-acento); border-color: var(--color-acento); }
+    .filtros button.activo {
+      background: var(--color-acento);
+      border-color: var(--color-acento);
+      color: white;
+    }
+
+    /* ============================================
+       CATÁLOGO (grid)
+       ============================================ */
+    .catalogo {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
+      gap: 1rem;
+    }
+    @media (max-width: 520px) {
+      .catalogo { grid-template-columns: repeat(2, 1fr); gap: 0.7rem; }
+    }
+
+    .tarjeta {
+      background: var(--color-tarjeta);
+      border: 1px solid var(--color-linea);
+      border-radius: var(--radio);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .tarjeta__imagen {
+      aspect-ratio: 4 / 5;
+      overflow: hidden;
+      background: var(--color-linea);
+    }
+    .tarjeta__imagen img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* MEJORA 1: cursor de zoom + leve efecto hover */
+    .tarjeta__imagen img { cursor: zoom-in; transition: transform .25s ease; }
+    .tarjeta__imagen:hover img { transform: scale(1.04); }
+
+    .tarjeta__info {
+      padding: 0.85rem 0.95rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      flex: 1;
+    }
+    .tarjeta__categoria {
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-acento);
+      font-weight: 700;
+    }
+    .tarjeta__nombre {
+      font-size: 0.92rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      line-height: 1.3;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      min-height: 2.4em;
+    }
+    .tarjeta__precio {
+      margin-top: auto;
+      padding-top: 0.35rem;
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .tarjeta__wa {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      padding: 0.6rem;
+      margin-top: 0.5rem;
+      border-radius: 8px;
+      background: var(--color-wa);
+      color: white;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+    .tarjeta__wa:hover { background: var(--color-wa-hover); }
+    .tarjeta__wa svg { width: 1em; height: 1em; }
+
+    /* ============================================
+       BOTÓN WHATSAPP PRINCIPAL
+       ============================================ */
+    .btn-wa-principal {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      padding: 1.15rem 1.5rem;
+      border-radius: 12px;
+      background: var(--color-acento);
+      color: white;
+      font-size: 0.98rem;
+      font-weight: 700;
+      margin-top: 2.5rem;
+      transition: background 0.2s;
+    }
+    .btn-wa-principal:hover { background: #3d4a30; }
+    .btn-wa-principal svg { width: 1.2em; height: 1.2em; }
+
+    /* ============================================
+       MEJORA 1: LIGHTBOX (imagen expandida)
+       ============================================ */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .9);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .lightbox.activo { display: flex; }
+
+    .lightbox img {
+      max-width: 92vw;
+      max-height: 88vh;
+      width: auto;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, .5);
+      animation: zoomIn .22s ease;
+      cursor: default;
+    }
+
+    @keyframes zoomIn {
+      from { transform: scale(.9); opacity: 0; }
+      to   { transform: scale(1);  opacity: 1; }
+    }
+
+    .lightbox__cerrar {
+      position: absolute;
+      top: 14px;
+      right: 22px;
+      font-size: 44px;
+      line-height: 1;
+      color: #fff;
+      cursor: pointer;
+      background: none;
+      border: 0;
+      padding: 0 8px;
+      transition: transform .2s;
+    }
+    .lightbox__cerrar:hover { transform: scale(1.15); }
+  </style>
+</head>
+
+<body>
+  <div class="contenedor">
+
+    <!-- ENCABEZADO -->
+    <header class="encabezado">
+      <h1 class="encabezado__titulo">Tienda <span>esencial</span></h1>
+      <p class="encabezado__descripcion">Selección curada de prendas y accesorios.</p>
+    </header>
+
+    <!-- FILTROS -->
+    <nav class="filtros" id="filtros"></nav>
+
+    <!-- CATÁLOGO -->
+    <main class="catalogo" id="catalogo"></main>
+
+    <!-- WHATSAPP PRINCIPAL -->
+    <a class="btn-wa-principal" id="waPrincipal" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Z"/></svg>
+      Contactar por WhatsApp
+    </a>
+
+  </div>
+
+  <!-- MEJORA 1: estructura del lightbox -->
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <button class="lightbox__cerrar" id="lightboxCerrar" aria-label="Cerrar">&times;</button>
+    <img id="lightboxImg" src="" alt="">
+  </div>
+
+  <script>
+    // ============================================================
+    // CONFIGURACIÓN — EDITA AQUÍ EL NÚMERO Y LOS TEXTOS
+    // ============================================================
+    const CONFIG = {
+      whatsapp: '5215512345678',
+      categorias: ['Todos', 'Playeras', 'Pantalones', 'Sudaderas', 'Chaquetas', 'Accesorios']
+    };
+
+    // ============================================================
+    // PRODUCTOS — AGREGA / EDITA AQUÍ
+    // ============================================================
+    const PRODUCTOS = [
+      { nombre: 'Playera Oversize Algodón',    categoria: 'Playeras',   precio: 399,  imagen: 'https://picsum.photos/seed/cuaplus-1/500/625' },
+      { nombre: 'Playera Básica Cuello Redondo', categoria: 'Playeras', precio: 299,  imagen: 'https://picsum.photos/seed/cuaplus-2/500/625' },
+      { nombre: 'Playera Manga Larga',         categoria: 'Playeras',   precio: 449,  imagen: 'https://picsum.photos/seed/cuaplus-3/500/625' },
+      { nombre: 'Pantalón Cargo Utility',      categoria: 'Pantalones', precio: 899,  imagen: 'https://picsum.photos/seed/cuaplus-4/500/625' },
+      { nombre: 'Jeans Slim Tapered',          categoria: 'Pantalones', precio: 999,  imagen: 'https://picsum.photos/seed/cuaplus-5/500/625' },
+      { nombre: 'Jogger Fleece Deportivo',     categoria: 'Pantalones', precio: 749,  imagen: 'https://picsum.photos/seed/cuaplus-6/500/625' },
+      { nombre: 'Sudadera Hoodie Heavy',       categoria: 'Sudaderas',  precio: 849,  imagen: 'https://picsum.photos/seed/cuaplus-7/500/625' },
+      { nombre: 'Sudadera Crewneck Minimal',   categoria: 'Sudaderas',  precio: 799,  imagen: 'https://picsum.photos/seed/cuaplus-8/500/625' },
+      { nombre: 'Chaqueta Cortavientos',       categoria: 'Chaquetas',  precio: 1299, imagen: 'https://picsum.photos/seed/cuaplus-9/500/625' },
+      { nombre: 'Chaqueta Bomber Padded',      categoria: 'Chaquetas',  precio: 1599, imagen: 'https://picsum.photos/seed/cuaplus-10/500/625' },
+      { nombre: 'Gorra Snapback',              categoria: 'Accesorios', precio: 349,  imagen: 'https://picsum.photos/seed/cuaplus-11/500/625' },
+      { nombre: 'Mochila Urbana 20 L',         categoria: 'Accesorios', precio: 1099, imagen: 'https://picsum.photos/seed/cuaplus-12/500/625' }
+    ];
+
+    // ============================================================
+    // LÓGICA — NO EDITAR
+    // ============================================================
+    const IMAGEN_FALLBACK = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500"><rect width="400" height="500" fill="#e5e4dc"/><text x="50%" y="50%" fill="#a0a394" font-family="sans-serif" font-size="18" text-anchor="middle" dominant-baseline="middle">Sin imagen</text></svg>'
+    );
+
+    const estado = { categoria: 'Todos' };
+    const $filtros = document.getElementById('filtros');
+    const $catalogo = document.getElementById('catalogo');
+    const $waPrincipal = document.getElementById('waPrincipal');
+
+    function escapar(texto) {
+      return String(texto).replace(/[&<>"']/g, c =>
+        ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+    }
+
+    /* MEJORA 2: el mensaje de WhatsApp ahora incluye el enlace de la imagen */
+    function enlaceWhatsApp(producto) {
+      // Enlace absoluto, aunque la ruta fuera relativa
+      const enlaceImagen = new URL(producto.imagen, window.location.href).href;
+
+      const mensaje =
+        `¡Hola! Me interesa: ${producto.nombre} - $${producto.precio.toLocaleString()}.\n` +
+        `Aquí está la imagen del producto:\n${enlaceImagen}\n` +
+        `¿Me das más info?`;
+
+      return `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(mensaje)}`;
+    }
+
+    function pintarFiltros() {
+      $filtros.innerHTML = CONFIG.categorias.map(cat =>
+        `<button data-categoria="${escapar(cat)}" class="${cat === estado.categoria ? 'activo' : ''}">${escapar(cat)}</button>`
+      ).join('');
+    }
+
+    function pintarCatalogo() {
+      const lista = estado.categoria === 'Todos'
+        ? PRODUCTOS
+        : PRODUCTOS.filter(p => p.categoria === estado.categoria);
+
+      $catalogo.innerHTML = lista.map(p => `
+        <article class="tarjeta">
+          <div class="tarjeta__imagen">
+            <img src="${escapar(p.imagen)}" alt="${escapar(p.nombre)}" loading="lazy"
+                 class="js-zoom"
+                 data-nombre="${escapar(p.nombre)}"
+                 onerror="this.src='${IMAGEN_FALLBACK}'">
+          </div>
+          <div class="tarjeta__info">
+            <p class="tarjeta__categoria">${escapar(p.categoria)}</p>
+            <h3 class="tarjeta__nombre">${escapar(p.nombre)}</h3>
+            <p class="tarjeta__precio">$${p.precio.toLocaleString()}</p>
+            <a class="tarjeta__wa" href="${enlaceWhatsApp(p)}" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Z"/></svg>
+              Pedir
+            </a>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    $filtros.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-categoria]');
+      if (!btn) return;
+      estado.categoria = btn.dataset.categoria;
+      pintarFiltros();
+      pintarCatalogo();
+    });
+
+    $waPrincipal.href = `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent('¡Hola! Vengo de la tienda en línea.')}`;
+
+    /* ============================================================
+       MEJORA 1: Lightbox — expandir la imagen al hacer clic
+       ============================================================ */
+    const $lightbox = document.getElementById('lightbox');
+    const $lightboxImg = document.getElementById('lightboxImg');
+    const $lightboxCerrar = document.getElementById('lightboxCerrar');
+
+    function abrirLightbox(src, alt) {
+      $lightboxImg.src = src;
+      $lightboxImg.alt = alt || '';
+      $lightbox.classList.add('activo');
+      $lightbox.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function cerrarLightbox() {
+      $lightbox.classList.remove('activo');
+      $lightbox.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+
+    // Delegación: sigue funcionando aunque el catálogo se repinte con los filtros
+    $catalogo.addEventListener('click', (e) => {
+      const img = e.target.closest('.js-zoom');
+      if (!img) return;
+      abrirLightbox(img.src, img.dataset.nombre || img.alt);
+    });
+
+    $lightboxCerrar.addEventListener('click', cerrarLightbox);
+    $lightbox.addEventListener('click', (e) => {
+      if (e.target === $lightbox) cerrarLightbox(); // clic en el fondo
+    });
+    $lightboxImg.addEventListener('click', (e) => e.stopPropagation()); // clic en la imagen NO cierra
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && $lightbox.classList.contains('activo')) cerrarLightbox();
+    });
+
+    pintarFiltros();
+    pintarCatalogo();
+  </script>
+</body>
+</html>
